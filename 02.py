@@ -6,7 +6,7 @@ import easygui
 import time
 import dns.resolver
 #设置基本信息
-version = "1.2"
+version = "1.3"
 print("All Copyright 2019-2022 XiaoyuStudio")
 print("This project use GPL3.0 LICENSE OpenSource")
 Client = socket.socket()
@@ -142,7 +142,7 @@ def AllSentence(evnet):
     AllSentenceApp = wx.App()
     AllSentenceFrame = wx.Frame(None,title='所有金句',pos=(200,200),size=(600,400))
     AllSentence_Text =  wx.TextCtrl(AllSentenceFrame,pos=(5,65),style= wx.TE_MULTILINE)
-    _thread.start_new_thread(GetAll)
+    _thread.start_new_thread(GetAll,())
     AllSentenceFrame.Show()
     AllSentenceApp.MainLoop()
 
