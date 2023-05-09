@@ -6,8 +6,8 @@ import easygui
 import time
 import dns.resolver
 #设置基本信息
-version = "1.3"
-print("All Copyright 2019-2022 XiaoyuStudio")
+version = "1.4"
+print("All Copyright 2019-2023 XiaoyuStudio")
 print("This project use GPL3.0 LICENSE OpenSource")
 Client = socket.socket()
 #host = "jinju.xiaoyustudio.com"
@@ -15,8 +15,15 @@ host_domain = 'jinju.xiaoyustudio.com'
 port_domain = 'jinju_port.xiaoyustudio.com'
 domaintype = 'TXT'
 servernumber = 1
-host_domain2 = dns.resolver.query(host_domain,domaintype,raise_on_no_answer=False)
-port_domain2 = dns.resolver.query(port_domain,domaintype,raise_on_no_answer=False)
+try:
+    host_domain2 = dns.resolver.query(host_domain,domaintype,raise_on_no_answer=False)
+except Exception as nmsl:
+    print(nmsl)
+try:
+    port_domain2 = dns.resolver.query(port_domain,domaintype,raise_on_no_answer=False)
+except Exception as nmsl:
+    print(nmsl)
+
 host_domain3 = str(host_domain2.rrset)
 port_domain3 = str(port_domain2.rrset)
 host_domain4 = host_domain3.split('"')
@@ -28,31 +35,52 @@ host = host_domain4[1]
 #host = "127.0.0.1"
 port = int(port_domain4[1])
 
-CreateDate = "2022.12.29"
+CreateDate = "2023.5.10"
 getmin = 0
 getmax = 0
 q = 0 
 
 def Connecttoserver():
-    
-    Client.connect((host,port))
+    try:
+        Client.connect((host,port))
+    except Exception as b:
+        print("发生错误",b)
+        DebugMessage(str(b))
     time.sleep(1)
     _thread.start_new_thread(canusemember,())
 def canusemember():
     print("canusememberLoaded")
     msg = "Get|||Get"
-    Client.send(msg.encode("gbk"))
-    getmessage1 = Client.recv(1024).decode('gbk')
-    getmessage2 = getmessage1.split('|||')
-    print(getmessage1)
-    print(getmessage2)
-    if getmessage2[0] == "member":
-        global getmin
-        global getmax
-        getmin = int(getmessage2[1])
-        getmax = int(getmessage2[2])
-        global q
-        q = random.randint(getmin,getmax)
+    try:
+        Client.send(msg.encode("gbk"))
+    except Exception as b:
+        print('发生错误',b)
+        DebugMessage(str(b))
+    try:
+        getmessage1 = Client.recv(1024).decode('gbk')
+        
+    except Exception as b:
+        print('发生错误',b)
+        DebugMessage(str(b))
+    try:
+        getmessage2 = getmessage1.split('|||')
+    except Exception as b:
+        print('发生错误',b)
+        DebugMessage(str(b))
+    try:
+
+        #print(getmessage1)
+        #print(getmessage2)
+        if getmessage2[0] == "member":
+            global getmin
+            global getmax
+            getmin = int(getmessage2[1])
+            getmax = int(getmessage2[2])
+            global q
+            q = random.randint(getmin,getmax)
+    except Exception as b:
+        print('发生错误',b)
+        DebugMessage(str(b))
 def DebugMessage(HaveBug):
     ver = '当前版本/Version:' + version
     server = '服务器/Server：' + host
@@ -134,11 +162,15 @@ def upload(event):
 #所有句子窗口
 def AllSentence(evnet):
     def GetAll():
-        msg = "GetAll|||GetAll"
-        Client.send(msg.encode('gbk'))
-        q = Client.recv(99999999).decode('gbk')
-        AllSentence_Text.SetValue(q)
-    
+        try:
+                
+            msg = "GetAll|||GetAll"
+            Client.send(msg.encode('gbk'))
+            q = Client.recv(99999999).decode('gbk')
+            AllSentence_Text.SetValue(q)
+        except Exception as b:
+            print('发生错误',b)
+            DebugMessage(str(b))
     AllSentenceApp = wx.App()
     AllSentenceFrame = wx.Frame(None,title='所有金句',pos=(200,200),size=(600,400))
     AllSentence_Text =  wx.TextCtrl(AllSentenceFrame,pos=(5,65),style= wx.TE_MULTILINE)
